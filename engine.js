@@ -63,7 +63,7 @@ Example.svg = function() {
         }
         const container = Composite.create();
         points.map(({x, y}) => Composite.add(container, Matter.Bodies.circle(x,y,5,{ isStatic: true })));
-        // Composite.scale(container, 2, 2, [200,100]);
+        Composite.scale(container, 2, 2, Matter.Vector.create(0, 0));
         Composite.add(world, container);
     }
 
