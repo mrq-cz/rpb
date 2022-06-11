@@ -27,6 +27,7 @@ Example.svg = function() {
     const render = Render.create({
         element: document.body,
         engine,
+        options: {wireframes: false}
     });
 
     Render.run(render);
@@ -68,29 +69,45 @@ Example.svg = function() {
         }).flat();
         
         const container = Composite.create();
+        const ns = new Set();
+        const ss = new Set();
         points.map(({x, y}, i) => {
-            const target = Matter.Bodies.rectangle(40+2*i, 200, 1, 5, {
+            const offset = 40+10*i;
+            const n = Bodies.rectangle(offset, 100, 1, 1, {
+                collisionFilter: {mask: -2},
                 plugin: {
                     attractors: [
-                        (bodyA, bodyB) => ({
-                            x: (bodyA.position.x - bodyB.position.x) * 1e-10,
-                            y: (bodyA.position.y - bodyB.position.y) * 1e-10,
-                        })
+                        (bodyA, bodyB) => ss.has(bodyB.id) && bodyB.id !== s.id ? MatterAttractors.Attractors.gravity(bodyA, bodyB) : null,
                     ]
                 }});
+            ns.add(n.id);
+            const c = Bodies.rectangle(offset+2, 100, 1, 1);
+            const s = Bodies.rectangle(offset+4, 100, 1, 1, {
+                collisionFilter: {mask: -1},
+                plugin: {
+                    attractors: [
+                        (bodyA, bodyB) => ns.has(bodyB.id) && bodyB.id !== n.id ? MatterAttractors.Attractors.gravity(bodyA, bodyB) : null,
+                    ]
+                }});
+            ss.add(s.id);
+            const nc = Matter.Constraint.create({bodyA: n, bodyB: c, length: 4, stiffness: 1, render: {visible: false}});
+            const sc = Matter.Constraint.create({bodyA: s, bodyB: c, length: 4, stiffness: 1, render: {visible: false}});
+
+            Composite.add(container, [c]);
+            Composite.add(container, [n, s]);
+            Composite.add(container, [nc, sc]);
             Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
                 isStatic: true,
                 collisionFilter: {mask: 0},
                 plugin: {
                     attractors: [
                         (bodyA, bodyB) => ({
-                            x: bodyB.id === target.id ? (bodyA.position.x - bodyB.position.x) * 1e-6 : null,
-                            y: bodyB.id === target.id ? (bodyA.position.y - bodyB.position.y) * 1e-6 : null,
+                            x: bodyB.id === c.id ? (bodyA.position.x - bodyB.position.x) * 1e-6 : null,
+                            y: bodyB.id === c.id ? (bodyA.position.y - bodyB.position.y) * 1e-6 : null,
                         })
                     ]
                 }
             }));
-            Composite.add(container, target);
         });
         Composite.scale(container, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, container);
