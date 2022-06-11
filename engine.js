@@ -64,35 +64,27 @@ Example.svg = function() {
             points.push(path.getPointAtLength(i));
         }
         const container = Composite.create();
-        points.map(({x, y}) => Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
-            isStatic: true,
-            collisionFilter: {mask: 0},
-            plugin: {
-                attractors: [
-                    (bodyA, bodyB) => ({
-                        x: (bodyA.position.x - bodyB.position.x) * 1e-6,
-                        y: (bodyA.position.y - bodyB.position.y) * 1e-6,
-                    })
-                ]
-            }
-        })));
-        for (let i = 0; i < 100; i++) {
-            Composite.add(container, Matter.Bodies.circle(100, 100, 4, {}));
-        }
+        points.map(({x, y}, i) => {
+            const target = Matter.Bodies.circle(40+2*i, 200, 2, {});
+            Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
+                isStatic: true,
+                collisionFilter: {mask: 0},
+                plugin: {
+                    attractors: [
+                        (bodyA, bodyB) => ({
+                            x: bodyB.id === target.id ? (bodyA.position.x - bodyB.position.x) * 1e-6 : null,
+                            y: bodyB.id === target.id ? (bodyA.position.y - bodyB.position.y) * 1e-6 : null,
+                        })
+                    ]
+                }
+            }));
+            Composite.add(container, target);
+        });
         Composite.scale(container, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, container);
     }
 
     load();
-
-
-    // boundary
-    Composite.add(world, [
-        Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
-        Bodies.rectangle(400, 600, 800, 50, { isStatic: true }),
-        Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
-        Bodies.rectangle(0, 300, 50, 600, { isStatic: true })
-    ]);
 
     // add mouse control
     var mouse = Mouse.create(render.canvas),
