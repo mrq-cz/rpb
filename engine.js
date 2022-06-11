@@ -56,11 +56,11 @@ Example.svg = function() {
 
     const select = (root, selector) => Array.prototype.slice.call(root.querySelectorAll(selector));
 
-    const loadSvg = url => fetch(url)
+    const loadSvg = svg => fetch('./svgs/'+svg)
             .then(response => response.text())
-            .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));     
+            .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));
 
-    const loadPoints = async (svg, every = 4) => loadSvg('./svgs/'+svg).then(root =>
+    const loadPoints = async (svg, every = 4) => loadSvg(svg).then(root =>
         select(root, 'path')
             .flat()
             .map(path => {
@@ -86,7 +86,7 @@ Example.svg = function() {
         return anchors;
     }
 
-    Eths = function (style) {
+    Eths = function (style, particle) {
 
         let cs = null;
         let target = null;
@@ -103,9 +103,12 @@ Example.svg = function() {
                     ]
                 }});
             ns.add(n.id);
-            const c = Bodies.rectangle(x+20, y, 12, 3, {
-                render: {fillStyle: style}
-            });
+            const c = Bodies.fromVertices(x+20, y, particle, {
+                render: {
+                    fillStyle: 'red',
+                    strokeStyle: 'pink',
+                    lineWidth: 1
+            }});
             const s = Bodies.rectangle(x+40, y, 2, 2, {
                 collisionFilter: {group: 2},
                 render: {fillStyle: 'red'},
@@ -142,10 +145,17 @@ Example.svg = function() {
         }
     }
 
-    const White = new Eths('white');
-    const Red = new Eths('red');
+    const svgToVertices = svg => {
+        const paths = select(svg, 'path');
+        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), 0.420, 0.420));
+    }
 
     async function load() {
+        const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
+
+        const White = new Eths('white', particleVerticle);
+        const Red = new Eths('red', particleVerticle);
+
         const points = await loadPoints('scissors.svg');
         const anchors = anchorsFromPoints(points);
 
