@@ -50,7 +50,7 @@ Example.svg = function() {
     // create runner
     const runner = Runner.create();
     Runner.run(runner, engine);
-    
+
 
     const select = function(root, selector) {
         return Array.prototype.slice.call(root.querySelectorAll(selector));
@@ -70,10 +70,11 @@ Example.svg = function() {
             }
             return pts;
         }).flat();
-        
+
         const container = Composite.create();
         const ns = new Set();
         const ss = new Set();
+        const pairs = [];
         points.map(({x, y}, i) => {
             const offset = 40+10*i;
             const n = Bodies.rectangle(offset, 100, 1, 1, {
@@ -84,7 +85,7 @@ Example.svg = function() {
                     ]
                 }});
             ns.add(n.id);
-            const c = Bodies.rectangle(offset+2, 100, 1, 1);
+            const c = Bodies.rectangle(offset+2, 100, 2, 1);
             const s = Bodies.rectangle(offset+4, 100, 1, 1, {
                 collisionFilter: {mask: -1},
                 plugin: {
@@ -93,25 +94,21 @@ Example.svg = function() {
                     ]
                 }});
             ss.add(s.id);
-            const nc = Matter.Constraint.create({bodyA: n, bodyB: c, length: 4, stiffness: 1, render: {visible: false}});
-            const sc = Matter.Constraint.create({bodyA: s, bodyB: c, length: 4, stiffness: 1, render: {visible: false}});
+            const nc = Matter.Constraint.create({bodyA: n, bodyB: c, pointB: {x: -1, y: 0}, length: 4, stiffness: 1, render: {visible: false}});
+            const sc = Matter.Constraint.create({bodyA: s, bodyB: c, pointB: {x: 1, y: 0}, length: 4, stiffness: 1, render: {visible: false}});
+            const anchor = Matter.Bodies.circle(x,y,0.1,{
+                isStatic: true,
+                render: {fillStyle: 'white'},
+                collisionFilter: {mask: 0}
+            });
+            const link = Matter.Constraint.create({bodyA: anchor, bodyB: c, length: 0, damping: 1, stiffness: 0.05, render: {visible: false}});
 
             Composite.add(container, [c]);
             Composite.add(container, [n, s]);
             Composite.add(container, [nc, sc]);
-            Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
-                isStatic: true,
-                render: {fillStyle: 'white'},
-                collisionFilter: {mask: 0},
-                plugin: {
-                    attractors: [
-                        (bodyA, bodyB) => ({
-                            x: bodyB.id === c.id ? (bodyA.position.x - bodyB.position.x) * 1e-6 : null,
-                            y: bodyB.id === c.id ? (bodyA.position.y - bodyB.position.y) * 1e-6 : null,
-                        })
-                    ]
-                }
-            }));
+            Composite.add(container, anchor);
+            Composite.add(container, link);
+            pairs.push([c, anchor]);
         });
         Composite.scale(container, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, container);
