@@ -27,7 +27,10 @@ Example.svg = function() {
     const render = Render.create({
         element: document.body,
         engine,
-        options: {wireframes: false}
+        options: {
+            wireframes: false,
+            background: 'black'
+        }
     });
 
     Render.run(render);
@@ -98,6 +101,7 @@ Example.svg = function() {
             Composite.add(container, [nc, sc]);
             Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
                 isStatic: true,
+                render: {fillStyle: 'white'},
                 collisionFilter: {mask: 0},
                 plugin: {
                     attractors: [
