@@ -71,14 +71,16 @@ Example.svg = function() {
                 return pts;
             }).flat());
 
+    const createAnchor = ({x,y}) => Matter.Bodies.circle(x,y,1,{
+        isStatic: true,
+        render: {fillStyle: 'grey', visible: false},
+        collisionFilter: {mask: 0}
+    });
+
     const anchorsFromPoints = points => {
         const anchors = Composite.create();
-        points.map(({x, y}) => {
-            const anchor = Matter.Bodies.circle(x,y,1,{
-                isStatic: true,
-                render: {fillStyle: 'grey', visible: false},
-                collisionFilter: {mask: 0}
-            });
+        points.map(point => {
+            const anchor = createAnchor(point);
             Composite.add(anchors, anchor);
         });
         return anchors;
@@ -90,7 +92,6 @@ Example.svg = function() {
         let target = null;
         const ns = new Set();
         const ss = new Set();
-        let next = 0;
 
         this.generateBody = ({x, y}) => {
             const n = Bodies.rectangle(x, y, 2, 2, {
@@ -120,8 +121,9 @@ Example.svg = function() {
                 cs = {body: c, next: c};
                 target = cs;
             } else {
-                const next = cs;
-                cs = {body: c, next};
+                const next = {body: c, next: cs};
+                cs.next = next;
+                cs = next;
             }
             Composite.add(world, [c]);
             Composite.add(world, [n, s]);
@@ -130,8 +132,12 @@ Example.svg = function() {
         }
 
         this.anchorBody = anchor => {
-
-            const link = Matter.Constraint.create({bodyA: anchor, bodyB: c, length: 0, damping: 1, stiffness: 0.05, render: {visible: false}});
+            if (target.link) {
+                Composite.remove(world, target.link);
+            }
+            const link = Matter.Constraint.create({bodyA: anchor, bodyB: target.body, length: 0, damping: 1, stiffness: 0.05, render: {visible: false}});
+            target.link = link;
+            target = target.next;
             Composite.add(world, link);
         }
     }
@@ -146,16 +152,20 @@ Example.svg = function() {
         Composite.scale(anchors, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, anchors);
 
-        const ns = new Set();
-        const ss = new Set();
-        anchors.bodies.map(({position:{x, y}}, i) => {
+        White.generateBody({x: 30, y: 100});
+
+        anchors.bodies.map((anchor, i) => {
             const offset = 40+10*i;
 
-            const c = White.generateBody({x: offset, y: 100});
-
-            const link = Matter.Constraint.create({pointA: {x,y}, bodyB: c, length: 0, damping: 1, stiffness: 0.05, render: {visible: false}});
-            Composite.add(world, link);
+            White.generateBody({x: offset, y: 100});
+            White.anchorBody(anchor);
         });
+
+        const middle = createAnchor({x: 200, y: 200});
+        Composite.add(world, middle);
+        for (let i = 0; i < 500; i++) {
+            White.anchorBody(middle);
+        }
     }
 
     load();
