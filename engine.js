@@ -22,6 +22,7 @@ Example.svg = function() {
         world = engine.world;
 
     engine.world.gravity.y = 0;
+    engine.timing.timeScale = engine.timing.timeScale / 5;
     MatterAttractors.Attractors.gravityConstant = 0.1;
 
     // create renderer
@@ -53,34 +54,40 @@ Example.svg = function() {
     Runner.run(runner, engine);
 
 
-    const select = function(root, selector) {
-        return Array.prototype.slice.call(root.querySelectorAll(selector));
-    };
+    const select = (root, selector) => Array.prototype.slice.call(root.querySelectorAll(selector));
 
     const loadSvg = url => fetch(url)
             .then(response => response.text())
             .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));
 
-    async function load() {
-        const svgs = await Promise.all(['./svgs/fist_1.svg'].map(loadSvg));
-        const paths = svgs.map(root => select(root, 'path')).flat();
-        const points = paths.map(path => {
-            const pts = [];
-            for (let i = 0; i < path.getTotalLength(); i = i + 4) {
-                pts.push(path.getPointAtLength(i));
-            }
-            return pts;
-        }).flat();
+    const loadPoints = async svg => loadSvg('./svgs/'+svg).then(root =>
+        select(root, 'path')
+            .flat()
+            .map(path => {
+                const pts = [];
+                for (let i = 0; i < path.getTotalLength(); i = i + 4) {
+                    pts.push(path.getPointAtLength(i));
+                }
+                return pts;
+            }).flat());
 
+    const anchorsFromPoints = points => {
         const anchors = Composite.create();
         points.map(({x, y}) => {
-           const anchor = Matter.Bodies.circle(x,y,1,{
+            const anchor = Matter.Bodies.circle(x,y,1,{
                 isStatic: true,
                 render: {fillStyle: 'grey', visible: false},
                 collisionFilter: {mask: 0}
             });
             Composite.add(anchors, anchor);
         });
+        return anchors;
+    }
+
+    async function load() {
+        const points = await loadPoints('scissors.svg');
+        const anchors = anchorsFromPoints(points);
+
         Composite.scale(anchors, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, anchors);
 
