@@ -46,6 +46,7 @@ Example.svg = function() {
     // create runner
     const runner = Runner.create();
     Runner.run(runner, engine);
+    
 
     const select = function(root, selector) {
         return Array.prototype.slice.call(root.querySelectorAll(selector));
@@ -56,13 +57,16 @@ Example.svg = function() {
             .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));
 
     async function load() {
-        const svgs = await Promise.all(['./svgs/paper_0.svg'].map(loadSvg));
+        const svgs = await Promise.all(['./svgs/fist_1.svg'].map(loadSvg));
         const paths = svgs.map(root => select(root, 'path')).flat();
-        const [path] = paths;
-        const points = [];
-        for (let i = 0; i < path.getTotalLength(); i = i + 4) {
-            points.push(path.getPointAtLength(i));
-        }
+        const points = paths.map(path => {
+            const pts = [];
+            for (let i = 0; i < path.getTotalLength(); i = i + 4) {
+                pts.push(path.getPointAtLength(i));
+            }
+            return pts;
+        }).flat();
+        
         const container = Composite.create();
         points.map(({x, y}, i) => {
             const target = Matter.Bodies.circle(40+2*i, 200, 2, {});
