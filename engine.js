@@ -27,6 +27,10 @@ Example.svg = function() {
     const render = Render.create({
         element: document.body,
         engine,
+        options: {
+            wireframes: false,
+            background: 'black'
+        }
     });
 
     Render.run(render);
@@ -66,10 +70,15 @@ Example.svg = function() {
             }
             return pts;
         }).flat();
-        
+
         const container = Composite.create();
         points.map(({x, y}, i) => {
             const target = Matter.Bodies.rectangle(40+2*i, 200, 1, 5, {
+                render: {
+                    strokeStyle: 'red',
+                    fillStyle: 'black',
+                    lineWidth: 2,
+               },
                 plugin: {
                     attractors: [
                         (bodyA, bodyB) => ({
@@ -80,6 +89,7 @@ Example.svg = function() {
                 }});
             Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
                 isStatic: true,
+                render: {fillStyle: 'white'},
                 collisionFilter: {mask: 0},
                 plugin: {
                     attractors: [
