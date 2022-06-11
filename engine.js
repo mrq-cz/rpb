@@ -65,7 +65,15 @@ Example.svg = function() {
         }
         const container = Composite.create();
         points.map(({x, y}, i) => {
-            const target = Matter.Bodies.circle(40+2*i, 200, 2, {});
+            const target = Matter.Bodies.rectangle(40+2*i, 200, 1, 5, {
+                plugin: {
+                    attractors: [
+                        (bodyA, bodyB) => ({
+                            x: (bodyA.position.x - bodyB.position.x) * 1e-10,
+                            y: (bodyA.position.y - bodyB.position.y) * 1e-10,
+                        })
+                    ]
+                }});
             Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
                 isStatic: true,
                 collisionFilter: {mask: 0},
