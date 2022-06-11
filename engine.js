@@ -58,7 +58,7 @@ Example.svg = function() {
 
     const loadSvg = url => fetch(url)
             .then(response => response.text())
-            .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));
+            .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));     
 
     const loadPoints = async (svg, every = 4) => loadSvg('./svgs/'+svg).then(root =>
         select(root, 'path')
