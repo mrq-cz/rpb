@@ -90,16 +90,19 @@ Example.svg = function() {
             const offset = 40+10*i;
             const n = Bodies.rectangle(offset, 100, 2, 2, {
                 collisionFilter: {group: 1},
-                render: {fillStyle: 'white'},
+                render: {fillStyle: 'blue'},
                 plugin: {
                     attractors: [
                         (bodyA, bodyB) => ss.has(bodyB.id) && bodyB.id !== s.id ? MatterAttractors.Attractors.gravity(bodyA, bodyB) : null,
                     ]
                 }});
             ns.add(n.id);
-            const c = Bodies.rectangle(offset+20, 100, 12, 3);
+            const c = Bodies.rectangle(offset+20, 100, 12, 3, {
+                render: {fillStyle: 'white'}
+            });
             const s = Bodies.rectangle(offset+40, 100, 2, 2, {
                 collisionFilter: {group: 2},
+                render: {fillStyle: 'red'},
                 plugin: {
                     attractors: [
                         (bodyA, bodyB) => ns.has(bodyB.id) && bodyB.id !== n.id ? MatterAttractors.Attractors.gravity(bodyA, bodyB) : null,
