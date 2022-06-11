@@ -21,6 +21,8 @@ Example.svg = function() {
     const engine = Engine.create(),
         world = engine.world;
 
+    engine.world.gravity.y = 0;
+
     // create renderer
     const render = Render.create({
         element: document.body,
@@ -58,16 +60,31 @@ Example.svg = function() {
         const paths = svgs.map(root => select(root, 'path')).flat();
         const [path] = paths;
         const points = [];
-        for (let i = 0; i < path.getTotalLength(); i = i + 10) {
+        for (let i = 0; i < path.getTotalLength(); i = i + 4) {
             points.push(path.getPointAtLength(i));
         }
         const container = Composite.create();
-        points.map(({x, y}) => Composite.add(container, Matter.Bodies.circle(x,y,5,{ isStatic: true })));
-        Composite.scale(container, 2, 2, Matter.Vector.create(0, 0));
+        points.map(({x, y}) => Composite.add(container, Matter.Bodies.circle(x,y,0.1,{
+            isStatic: true,
+            collisionFilter: {mask: 0},
+            plugin: {
+                attractors: [
+                    (bodyA, bodyB) => ({
+                        x: (bodyA.position.x - bodyB.position.x) * 1e-6,
+                        y: (bodyA.position.y - bodyB.position.y) * 1e-6,
+                    })
+                ]
+            }
+        })));
+        for (let i = 0; i < 100; i++) {
+            Composite.add(container, Matter.Bodies.circle(100, 100, 4, {}));
+        }
+        Composite.scale(container, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, container);
     }
 
     load();
+
 
     // boundary
     Composite.add(world, [
