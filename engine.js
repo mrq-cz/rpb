@@ -105,11 +105,18 @@ Example.svg = function() {
                     ]
                 }});
             ns.add(n.id);
+            const svgPath = style === 'white' ? './svgs/eth.svg' : './svgs/eth_red.svg'; 
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
-                    fillStyle: 'white',
+                    fillStyle: style,
                     strokeStyle: 'black',
-                    lineWidth: 1
+                    lineWidth: 1, 
+                    sprite: {
+                        texture: svgPath,
+                        xScale: 0.26,
+                        yScale: 0.26
+
+                    }
             }});
             const s = Bodies.rectangle(x+40, y, 2, 2, {
                 collisionFilter: {group: 2},
