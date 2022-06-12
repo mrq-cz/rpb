@@ -100,43 +100,21 @@ Example.svg = function() {
         const ss = new Set();
 
         this.generateBody = ({x, y}) => {
-            const n = Bodies.rectangle(x, y, 2, 2, {
-                collisionFilter: {group: 1},
-                render: {fillStyle: 'blue'},
-                plugin: {
-                    attractors: [
-                        (bodyA, bodyB) => ss.has(bodyB.id) && bodyB.id !== s.id ? MatterAttractors.Attractors.gravity(bodyA, bodyB) : null,
-                    ]
-                }});
-            ns.add(n.id);
-            const svgPath = style === 'white' ? './svgs/eth.svg' : './svgs/eth_red.svg'; 
+            const svgPath = style === 'white' ? './svgs/eth.svg' : './svgs/eth_red.svg';
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
                     fillStyle: style,
                     lineWidth: 1, 
-                    // sprite: {
-                    //     texture: svgPath,
-                    //     yOffset: -0.013,
-                    //     xOffset: -0.00013,
-                    //     xScale: 0.4,
-                    //     yScale: 0.4
-                    // }
+                    sprite: {
+                        texture: svgPath,
+                        yOffset: -0.013,
+                        xOffset: -0.00013,
+                        xScale: 0.4,
+                        yScale: 0.4
+                    }
             }});
-            const s = Bodies.rectangle(x+40, y, 2, 2, {
-                collisionFilter: {group: 2},
-                render: {fillStyle: 'red'},
-                plugin: {
-                    attractors: [
-                        (bodyA, bodyB) => ns.has(bodyB.id) && bodyB.id !== n.id ? MatterAttractors.Attractors.gravity(bodyA, bodyB) : null,
-                    ]
-                }});
-            ss.add(s.id);
-            const nc = Matter.Constraint.create({bodyA: n, bodyB: c, pointB: {x: -5, y: 0}, length: 3, stiffness: 0.3, render: {visible: false}});
-            const sc = Matter.Constraint.create({bodyA: s, bodyB: c, pointB: {x: 5, y: 0}, length: 3, stiffness: 0.3, render: {visible: false}});
             cs.push({body: c});
             Composite.add(world, [c]);
-            // Composite.add(world, [n, s]);
-            Composite.add(world, [nc, sc]);
             return c;
         }
 
