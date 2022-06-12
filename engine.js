@@ -100,7 +100,7 @@ Example.svg = function() {
         const ss = new Set();
 
         this.generateBody = ({x, y}) => {
-            const svgPath = style === 'white' ? './svgs/eth.svg' : './svgs/eth_red.svg';
+            const svgPath = style === 'white' ? './svgs/eth_violet.svg' : './svgs/eth_red.svg';
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
                     fillStyle: style,
