@@ -21,7 +21,7 @@ Example.svg = function() {
     const engine = Engine.create(),
         world = engine.world;
 
-    engine.world.gravity.y = 0;
+    engine.world.gravity.y = 20;
     engine.timing.timeScale = engine.timing.timeScale / 5;
     MatterAttractors.Attractors.gravityConstant = 0.1;
 
@@ -45,6 +45,10 @@ Example.svg = function() {
         render.options.height = window.innerHeight;
         render.canvas.width = window.innerWidth;
         render.canvas.height = window.innerHeight;
+        Render.lookAt(render, {
+            min: { x: 0, y: 0 },
+            max: { x: 800, y: 600 }
+        });
     }
     resizeBounds();
     window.addEventListener('resize', resizeBounds);
@@ -109,15 +113,14 @@ Example.svg = function() {
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
                     fillStyle: style,
-                    strokeStyle: 'pink',
                     lineWidth: 1, 
-                    sprite: {
-                        texture: svgPath,
-                        yOffset: -0.013,
-                        xOffset: -0.00013,
-                        xScale: 0.4,
-                        yScale: 0.4
-                    }
+                    // sprite: {
+                    //     texture: svgPath,
+                    //     yOffset: -0.013,
+                    //     xOffset: -0.00013,
+                    //     xScale: 0.4,
+                    //     yScale: 0.4
+                    // }
             }});
             const s = Bodies.rectangle(x+40, y, 2, 2, {
                 collisionFilter: {group: 2},
@@ -155,6 +158,15 @@ Example.svg = function() {
         this.anchorAll = anchor => {
             cs.forEach(() => this.anchorBody(anchor));
         }
+
+        this.freeAll = () => {
+            cs.forEach(body => {
+                if (body.link) {
+                    Composite.remove(world, body.link);
+                }
+                body.link = null;
+            });
+        }
     }
 
     const svgToVertices = svg => {
@@ -163,8 +175,10 @@ Example.svg = function() {
     }
 
     async function load() {
-        const middle = createAnchor({x: 200, y: 200});
-        Composite.add(world, middle);
+        const left = createAnchor({x: -200, y: 200});
+        const right = createAnchor({x: 1000, y: 200});
+        Composite.add(world, left);
+        Composite.add(world, right);
 
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
         const White = new Eths('white', particleVerticle);
@@ -175,28 +189,43 @@ Example.svg = function() {
         // return;
 
         const stone = anchorsFromPoints(await loadPoints('fist_1.svg'));
+        Composite.rotate(stone, Math.PI / 2, {x: 200, y:200});
+        Composite.translate(stone, {x:200, y:0})
         const scissors = anchorsFromPoints(await loadPoints('scissors.svg'));
+        Composite.rotate(scissors, -(Math.PI / 2), {x: 200, y:200});
+        Composite.translate(scissors, {x:150, y:280})
         const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
 
         Composite.add(world, [stone, scissors, paper]);
 
         for (let i = 0; i < paper.bodies.length; i++) {
             White.generateBody({x: 200+i*10, y: 200});
-            White.anchorBody(middle);
+            White.anchorBody(left);
+        }
+
+        for (let i = 0; i < paper.bodies.length; i++) {
+            Red.generateBody({x: 200+i*10, y: 200});
+            Red.anchorBody(right);
         }
 
         await wait(2000);
 
         for (;;) {
-            White.anchorAll(middle);
             White.anchorPoints(stone);
-            await wait(4000);
+            Red.anchorPoints(scissors);
+            await wait(2000);
+            Red.freeAll();
+            Composite.translate(stone, {x: 600, y: 0});
+            await wait(500);
+            Composite.translate(stone, {x: -600, y: 0});
+            return;
+            await wait(2000);
             White.anchorAll(middle);
             White.anchorPoints(scissors);
-            await wait(4000);
+            await wait(2000);
             White.anchorAll(middle);
             White.anchorPoints(paper);
-            await wait(4000);
+            await wait(2000);
         }
     }
 
