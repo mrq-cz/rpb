@@ -32,7 +32,7 @@ RPB.svg = function() {
         engine,
         options: {
             wireframes: false,
-            background: 'black'
+            background: '#222'
         }
     });
 
