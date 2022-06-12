@@ -53,6 +53,7 @@ Example.svg = function() {
     const runner = Runner.create();
     Runner.run(runner, engine);
 
+    const wait = async time => new Promise(resolve => setTimeout(resolve, time));
 
     const select = (root, selector) => Array.prototype.slice.call(root.querySelectorAll(selector));
 
@@ -83,6 +84,7 @@ Example.svg = function() {
             const anchor = createAnchor(point);
             Composite.add(anchors, anchor);
         });
+        Composite.scale(anchors, 3, 3, Matter.Vector.create(0, 0));
         return anchors;
     }
 
@@ -153,7 +155,6 @@ Example.svg = function() {
         const points = await loadPoints('scissors.svg');
         const anchors = anchorsFromPoints(points);
 
-        Composite.scale(anchors, 3, 3, Matter.Vector.create(0, 0));
         Composite.add(world, anchors);
 
         White.generateBody({x: 30, y: 100});
@@ -167,9 +168,25 @@ Example.svg = function() {
 
         const middle = createAnchor({x: 200, y: 200});
         Composite.add(world, middle);
+
+        await wait(2000);
+
         for (let i = 0; i < 500; i++) {
             White.anchorBody(middle);
         }
+
+        await wait(2000);
+
+        anchors.bodies.map((anchor, i) => {
+            White.anchorBody(anchor);
+        });
+
+        await wait(2000);
+
+        const nextAnchors = anchorsFromPoints(await loadPoints('paper_4f.svg'));
+        nextAnchors.bodies.map((anchor, i) => {
+            White.anchorBody(anchor);
+        });
     }
 
     load();
