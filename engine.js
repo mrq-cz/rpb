@@ -155,8 +155,10 @@ Example.svg = function() {
     async function load() {
         const left = createAnchor({x: -200, y: 200});
         const right = createAnchor({x: 1000, y: 200});
+        const bottom = createAnchor({x: 400, y: 800});
         Composite.add(world, left);
         Composite.add(world, right);
+        Composite.add(world, bottom);
 
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
         const White = new Eths('white', particleVerticle);
@@ -166,44 +168,93 @@ Example.svg = function() {
         // White.anchorBody(middle);
         // return;
 
+        const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
+        Composite.rotate(paper, Math.PI / 2, {x: 200, y:200});
+        Composite.translate(paper, {x:150, y:-50})
         const stone = anchorsFromPoints(await loadPoints('fist_1.svg'));
         Composite.rotate(stone, Math.PI / 2, {x: 200, y:200});
         Composite.translate(stone, {x:200, y:0})
         const scissors = anchorsFromPoints(await loadPoints('scissors.svg'));
         Composite.rotate(scissors, -(Math.PI / 2), {x: 200, y:200});
-        Composite.translate(scissors, {x:150, y:280})
-        const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
+        Composite.rotate(scissors, -(Math.PI / 7), {x: 200, y:200});
+        Composite.translate(scissors, {x:400, y:280})
+        const redstone = anchorsFromPoints(await loadPoints('fist_1.svg'));
+        Composite.rotate(redstone, -(Math.PI / 2), {x: 200, y:200});
+        Composite.translate(redstone, {x:300, y:200})
 
-        Composite.add(world, [stone, scissors, paper]);
+        Composite.add(world, [stone, scissors, paper, redstone]);
 
         for (let i = 0; i < paper.bodies.length; i++) {
-            White.generateBody({x: 200+i*10, y: 200});
+            White.generateBody({x: -200-i*10, y: 200});
             White.anchorBody(left);
         }
 
         for (let i = 0; i < paper.bodies.length; i++) {
-            Red.generateBody({x: 200+i*10, y: 200});
+            Red.generateBody({x: 1000+i*10, y: 200});
             Red.anchorBody(right);
         }
 
         await wait(2000);
 
         for (;;) {
-            White.anchorPoints(stone);
-            Red.anchorPoints(scissors);
+
+            White.anchorAll(bottom);
+            Red.anchorAll(bottom);
             await wait(2000);
+            White.freeAll();
+            Red.freeAll();
+            engine.world.gravity.y = -1;
+            engine.world.gravity.x = 0;
+            return;
+
+            // stone v scissors
+            White.anchorPoints(stone);
+            await wait(500);
+            Red.anchorPoints(scissors);
+            await wait(4000);
             Red.freeAll();
             Composite.translate(stone, {x: 600, y: 0});
             await wait(500);
             Composite.translate(stone, {x: -600, y: 0});
-            return;
-            await wait(2000);
-            White.anchorAll(middle);
-            White.anchorPoints(scissors);
-            await wait(2000);
-            White.anchorAll(middle);
+
+            await wait(5000);
+
+            // paper v scissor
             White.anchorPoints(paper);
+            await wait(500);
+            Red.anchorPoints(scissors);
+            await wait(4000);
+            Composite.translate(scissors, {x: -600, y: 400});
+            White.freeAll();
+            await wait(500);
+            Composite.translate(scissors, {x: 600, y: -400});
+
+            await wait(5000);
+
+            // paper v stone
+            Red.anchorAll(right);
+            White.anchorAll(left);
+            await wait(200);
+            Red.anchorPoints(redstone);
+            await wait(1000);
+            White.anchorPoints(paper);
+            await wait(4000);
+            Composite.translate(paper, {x: -200, y: 0});
+            await wait(1000);
+            Red.freeAll();
+            engine.world.gravity.y = 5;
+            engine.world.gravity.x = -30;
+            Composite.translate(paper, {x: 200, y: 0});
+
+            // reset
             await wait(2000);
+            engine.world.gravity.y = 20;
+            engine.world.gravity.x = 0;
+            await wait(2000);
+
+            White.anchorAll(left);
+            Red.anchorAll(right);
+            await wait(4000);
         }
     }
 
