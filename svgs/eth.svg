@@ -26,9 +26,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="11.329774"
-     inkscape:cx="403.40611"
-     inkscape:cy="557.68986"
+     inkscape:zoom="12.550566"
+     inkscape:cx="399.30471"
+     inkscape:cy="558.50073"
      inkscape:window-width="1826"
      inkscape:window-height="1051"
      inkscape:window-x="-9"
@@ -42,28 +42,20 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#000000;stroke:none;stroke-width:0.266184px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 105.59863,155.84245 -4.5741,-6.66343 4.39683,-7.83986 4.67917,7.93886"
+       style="fill:#000000;stroke:none;stroke-width:0.79894;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 105.58409,155.99359 -4.75427,-6.4798 4.70124,-8.28828 4.70537,8.38821"
        id="path2790"
        sodipodi:nodetypes="cccc" />
     <path
-       style="fill:none;stroke:#00ff25;stroke-width:0.3175;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 101.16782,149.41652 c 4.36004,2.77018 4.36004,2.77018 4.36004,2.77018 l 4.41471,-2.77018 -4.41674,6.32555 z"
+       style="fill:#ffffff;stroke:none;stroke-width:0.282222;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 101.02941,150.3145 4.53559,2.8414 4.47383,-2.78169 -4.47582,5.85341 z"
        id="path1006"
        sodipodi:nodetypes="ccccc"
        inkscape:export-filename="C:\Users\abi\Documents\hackatons\hackaton1_ethprague2022\ethprague2022\svgs\eth_sprite_white.png"
        inkscape:export-xdpi="384.57001"
        inkscape:export-ydpi="384.57001" />
     <path
-       style="fill:none;stroke:#00ff25;stroke-width:0.3175;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 101.16782,148.61998 4.36004,-2.08437 4.38796,2.071"
-       id="path1012"
-       sodipodi:nodetypes="ccc"
-       inkscape:export-filename="C:\Users\abi\Documents\hackatons\hackaton1_ethprague2022\ethprague2022\svgs\eth_sprite_white.png"
-       inkscape:export-xdpi="384.57001"
-       inkscape:export-ydpi="384.57001" />
-    <path
-       style="fill:none;stroke:#00ff25;stroke-width:0.3175;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 101.16782,148.61999 4.36324,-7.39448 4.38476,7.3811 -4.37865,2.57685 z"
        id="path1004"
        sodipodi:nodetypes="ccccc"
