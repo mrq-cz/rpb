@@ -27,8 +27,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="12.550566"
-     inkscape:cx="399.30471"
-     inkscape:cy="558.50073"
+     inkscape:cx="399.3047"
+     inkscape:cy="560.09426"
      inkscape:window-width="1826"
      inkscape:window-height="1051"
      inkscape:window-x="-9"
@@ -42,8 +42,12 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:none;stroke:#ff0000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:none;stroke:#ff0000;stroke-width:0.619;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 105.53106,141.22551 -4.70124,8.28828 4.75427,6.4798 4.65234,-6.37987 z"
        id="path10303" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:0.619;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 100.82982,149.51379 4.66144,1.61867 4.74517,-1.51874"
+       id="path906" />
   </g>
 </svg>
