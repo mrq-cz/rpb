@@ -1,4 +1,4 @@
-const RPB = RPB || {};
+var RPB = RPB || {};
 
 RPB.svg = function() {
     Matter.use(MatterAttractors);
