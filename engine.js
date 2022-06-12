@@ -82,13 +82,13 @@ Example.svg = function() {
         collisionFilter: {mask: 0}
     });
 
-    const anchorsFromPoints = points => {
+    const anchorsFromPoints = (points, scale = 3) => {
         const anchors = Composite.create();
         points.map(point => {
             const anchor = createAnchor(point);
             Composite.add(anchors, anchor);
         });
-        Composite.scale(anchors, 3, 3, Matter.Vector.create(0, 0));
+        Composite.scale(anchors, scale, scale, Matter.Vector.create(0, 0));
         return anchors;
     }
 
@@ -100,7 +100,7 @@ Example.svg = function() {
         const ss = new Set();
 
         this.generateBody = ({x, y}) => {
-            const svgPath = style === 'white' ? './svgs/eth.svg' : './svgs/eth_red.svg';
+            const svgPath = `./svgs/${style}.svg`;
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
                     fillStyle: style,
@@ -161,8 +161,9 @@ Example.svg = function() {
         Composite.add(world, bottom);
 
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
-        const White = new Eths('white', particleVerticle);
-        const Red = new Eths('red', particleVerticle);
+        const White = new Eths('eth_violet', particleVerticle);
+        const Red = new Eths('eth_green', particleVerticle);
+        const Bordel = new Eths('eth_red', particleVerticle);
 
         // White.generateBody({x: 200, y: 200});
         // White.anchorBody(middle);
@@ -171,18 +172,24 @@ Example.svg = function() {
         const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
         Composite.rotate(paper, Math.PI / 2, {x: 200, y:200});
         Composite.translate(paper, {x:150, y:-50})
+
         const stone = anchorsFromPoints(await loadPoints('fist_1.svg'));
         Composite.rotate(stone, Math.PI / 2, {x: 200, y:200});
         Composite.translate(stone, {x:200, y:0})
+
         const scissors = anchorsFromPoints(await loadPoints('scissors.svg'));
         Composite.rotate(scissors, -(Math.PI / 2), {x: 200, y:200});
         Composite.rotate(scissors, -(Math.PI / 7), {x: 200, y:200});
         Composite.translate(scissors, {x:400, y:280})
+
         const redstone = anchorsFromPoints(await loadPoints('fist_1.svg'));
         Composite.rotate(redstone, -(Math.PI / 2), {x: 200, y:200});
         Composite.translate(redstone, {x:300, y:200})
 
-        Composite.add(world, [stone, scissors, paper, redstone]);
+        const bordel = anchorsFromPoints(await loadPoints('bordel.svg'), 3.5);
+        Composite.translate(bordel, {x:0, y:-300})
+
+        Composite.add(world, [stone, scissors, paper, redstone, bordel]);
 
         for (let i = 0; i < paper.bodies.length; i++) {
             White.generateBody({x: -200-i*10, y: 200});
@@ -194,10 +201,14 @@ Example.svg = function() {
             Red.anchorBody(right);
         }
 
-        await wait(2000);
+        for (let i = 0; i < bordel.bodies.length; i++) {
+            Bordel.generateBody({x: 1000+i*10, y: 200});
+            Bordel.anchorBody(bottom);
+        }
+
+        await wait(500);
 
         for (;;) {
-
             White.anchorAll(bottom);
             Red.anchorAll(bottom);
             await wait(2000);
@@ -205,10 +216,13 @@ Example.svg = function() {
             Red.freeAll();
             engine.world.gravity.y = -1;
             engine.world.gravity.x = 0;
+            await wait(3000);
+            Bordel.anchorPoints(bordel);
 
             await wait(4000);
             engine.world.gravity.y = 20;
             engine.world.gravity.x = 0;
+            Bordel.freeAll();
             White.anchorAll(left);
             Red.anchorAll(right);
             await wait(5000);
