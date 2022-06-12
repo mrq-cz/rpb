@@ -208,6 +208,14 @@ RPB.svg = function() {
 
         let repeat = false;
 
+        document.addEventListener("keydown", async ({key}) => {
+            if (key === 'b') {
+                Bordel.anchorPoints(bordel);
+                await wait(500);
+                Bordel.freeAll();
+            }
+        });
+
         for (;;) {
             White.anchorAll(bottom);
             Red.anchorAll(bottom);
