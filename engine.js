@@ -156,18 +156,16 @@ Example.svg = function() {
         const left = createAnchor({x: -200, y: 200});
         const right = createAnchor({x: 1000, y: 200});
         const bottom = createAnchor({x: 400, y: 800});
+        const superbottom = createAnchor({x: 400, y: 8000000});
         Composite.add(world, left);
         Composite.add(world, right);
         Composite.add(world, bottom);
+        Composite.add(world, superbottom);
 
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
         const White = new Eths('eth_violet', particleVerticle);
         const Red = new Eths('eth_green', particleVerticle);
         const Bordel = new Eths('eth_red', particleVerticle, 0.5);
-
-        // White.generateBody({x: 200, y: 200});
-        // White.anchorBody(middle);
-        // return;
 
         const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
         Composite.rotate(paper, Math.PI / 2, {x: 200, y:200});
@@ -203,10 +201,12 @@ Example.svg = function() {
 
         for (let i = 0; i < bordel.bodies.length; i++) {
             Bordel.generateBody({x: 1000+i*10, y: 200});
-            Bordel.anchorBody(bottom);
+            Bordel.anchorBody(superbottom);
         }
 
         await wait(500);
+
+        let repeat = false;
 
         for (;;) {
             White.anchorAll(bottom);
@@ -216,8 +216,10 @@ Example.svg = function() {
             Red.freeAll();
             engine.world.gravity.y = -1;
             engine.world.gravity.x = 0;
-            await wait(2800);
-            Bordel.anchorPoints(bordel);
+            if (repeat) {
+                await wait(2000);
+                Bordel.anchorPoints(bordel);
+            }
 
             await wait(4000);
             engine.world.gravity.y = 20;
@@ -275,6 +277,8 @@ Example.svg = function() {
             White.anchorAll(left);
             Red.anchorAll(right);
             await wait(3000);
+            repeat = true;
+            Bordel.anchorAll(superbottom);
         }
     }
 
