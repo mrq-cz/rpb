@@ -88,8 +88,8 @@ Example.svg = function() {
 
     Eths = function (style, particle) {
 
-        let cs = null;
-        let target = null;
+        let cs = [];
+        let target = -1;
         const ns = new Set();
         const ss = new Set();
 
@@ -105,8 +105,8 @@ Example.svg = function() {
             ns.add(n.id);
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
-                    fillStyle: 'red',
-                    strokeStyle: 'pink',
+                    fillStyle: 'white',
+                    strokeStyle: 'black',
                     lineWidth: 1
             }});
             const s = Bodies.rectangle(x+40, y, 2, 2, {
@@ -120,27 +120,21 @@ Example.svg = function() {
             ss.add(s.id);
             const nc = Matter.Constraint.create({bodyA: n, bodyB: c, pointB: {x: -5, y: 0}, length: 3, stiffness: 0.3, render: {visible: false}});
             const sc = Matter.Constraint.create({bodyA: s, bodyB: c, pointB: {x: 5, y: 0}, length: 3, stiffness: 0.3, render: {visible: false}});
-            if (!cs) {
-                cs = {body: c, next: c};
-                target = cs;
-            } else {
-                const next = {body: c, next: cs};
-                cs.next = next;
-                cs = next;
-            }
+            cs.push({body: c});
             Composite.add(world, [c]);
             Composite.add(world, [n, s]);
             Composite.add(world, [nc, sc]);
             return c;
         }
 
-        this.anchorBody = anchor => {
-            if (target.link) {
-                Composite.remove(world, target.link);
+        this.anchorBody = (anchor, {damping = 1, stiffness = 0.05} = {}) => {
+            target = (target + 1) % cs.length;
+            const body = cs[target];
+            if (body.link) {
+                Composite.remove(world, body.link);
             }
-            const link = Matter.Constraint.create({bodyA: anchor, bodyB: target.body, length: 0, damping: 1, stiffness: 0.05, render: {visible: false}});
-            target.link = link;
-            target = target.next;
+            const link = Matter.Constraint.create({bodyA: anchor, bodyB: body.body, length: 0, damping, stiffness, render: {visible: false}});
+            body.link = link;
             Composite.add(world, link);
         }
     }
