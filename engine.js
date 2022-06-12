@@ -109,8 +109,8 @@ Example.svg = function() {
                         texture: svgPath,
                         yOffset: -0.013,
                         xOffset: -0.00013,
-                        xScale: 0.4,
-                        yScale: 0.4
+                        xScale: 0.44,
+                        yScale: 0.44
                     }
             }});
             cs.push({body: c});
@@ -149,7 +149,7 @@ Example.svg = function() {
 
     const svgToVertices = svg => {
         const paths = select(svg, 'path');
-        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), 0.6, 0.6));
+        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), 0.66, 0.66));
     }
 
     async function load() {
@@ -205,7 +205,13 @@ Example.svg = function() {
             Red.freeAll();
             engine.world.gravity.y = -1;
             engine.world.gravity.x = 0;
-            return;
+
+            await wait(4000);
+            engine.world.gravity.y = 20;
+            engine.world.gravity.x = 0;
+            White.anchorAll(left);
+            Red.anchorAll(right);
+            await wait(5000);
 
             // stone v scissors
             White.anchorPoints(stone);
@@ -247,14 +253,14 @@ Example.svg = function() {
             Composite.translate(paper, {x: 200, y: 0});
 
             // reset
-            await wait(2000);
+            await wait(1500);
             engine.world.gravity.y = 20;
             engine.world.gravity.x = 0;
-            await wait(2000);
+            await wait(1500);
 
             White.anchorAll(left);
             Red.anchorAll(right);
-            await wait(4000);
+            await wait(3000);
         }
     }
 
