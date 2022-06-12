@@ -92,7 +92,7 @@ Example.svg = function() {
         return anchors;
     }
 
-    Eths = function (style, particle) {
+    Eths = function (style, particle, scale = 0.44) {
 
         let cs = [];
         let target = -1;
@@ -109,8 +109,8 @@ Example.svg = function() {
                         texture: svgPath,
                         yOffset: -0.013,
                         xOffset: -0.00013,
-                        xScale: 0.44,
-                        yScale: 0.44
+                        xScale: scale,
+                        yScale: scale
                     }
             }});
             cs.push({body: c});
@@ -147,9 +147,9 @@ Example.svg = function() {
         }
     }
 
-    const svgToVertices = svg => {
+    const svgToVertices = (svg, scale = 0.66) => {
         const paths = select(svg, 'path');
-        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), 0.66, 0.66));
+        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), scale, scale));
     }
 
     async function load() {
@@ -163,7 +163,7 @@ Example.svg = function() {
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
         const White = new Eths('eth_violet', particleVerticle);
         const Red = new Eths('eth_green', particleVerticle);
-        const Bordel = new Eths('eth_red', particleVerticle);
+        const Bordel = new Eths('eth_red', particleVerticle, 0.5);
 
         // White.generateBody({x: 200, y: 200});
         // White.anchorBody(middle);
@@ -216,7 +216,7 @@ Example.svg = function() {
             Red.freeAll();
             engine.world.gravity.y = -1;
             engine.world.gravity.x = 0;
-            await wait(3000);
+            await wait(2800);
             Bordel.anchorPoints(bordel);
 
             await wait(4000);
