@@ -146,6 +146,14 @@ Example.svg = function() {
             body.link = link;
             Composite.add(world, link);
         }
+
+        this.anchorPoints = anchors => {
+            anchors.bodies.map(a => this.anchorBody(a));
+        }
+
+        this.anchorAll = anchor => {
+            cs.forEach(() => this.anchorBody(anchor));
+        }
     }
 
     const svgToVertices = svg => {
@@ -156,44 +164,36 @@ Example.svg = function() {
     async function load() {
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
 
+        const stone = anchorsFromPoints(await loadPoints('fist_1.svg'));
+        const scissors = anchorsFromPoints(await loadPoints('scissors.svg'));
+        const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
+
         const White = new Eths('white', particleVerticle);
         const Red = new Eths('red', particleVerticle);
 
-        const points = await loadPoints('scissors.svg');
-        const anchors = anchorsFromPoints(points);
-
-        Composite.add(world, anchors);
-
-        White.generateBody({x: 30, y: 100});
-
-        anchors.bodies.map((anchor, i) => {
-            const offset = 40+10*i;
-
-            White.generateBody({x: offset, y: 100});
-            White.anchorBody(anchor);
-        });
+        Composite.add(world, [stone, scissors, paper]);
 
         const middle = createAnchor({x: 200, y: 200});
         Composite.add(world, middle);
 
-        await wait(2000);
-
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < paper.bodies.length; i++) {
+            White.generateBody({x: 200+i*10, y: 200});
             White.anchorBody(middle);
         }
 
         await wait(2000);
 
-        anchors.bodies.map((anchor, i) => {
-            White.anchorBody(anchor);
-        });
-
-        await wait(2000);
-
-        const nextAnchors = anchorsFromPoints(await loadPoints('paper_4f.svg'));
-        nextAnchors.bodies.map((anchor, i) => {
-            White.anchorBody(anchor);
-        });
+        for (;;) {
+            White.anchorAll(middle);
+            White.anchorPoints(stone);
+            await wait(4000);
+            White.anchorAll(middle);
+            White.anchorPoints(scissors);
+            await wait(4000);
+            White.anchorAll(middle);
+            White.anchorPoints(paper);
+            await wait(4000);
+        }
     }
 
     load();
