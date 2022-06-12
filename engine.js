@@ -61,7 +61,7 @@ Example.svg = function() {
             .then(response => response.text())
             .then(raw => (new window.DOMParser()).parseFromString(raw, 'image/svg+xml'));
 
-    const loadPoints = async (svg, every = 4) => loadSvg(svg).then(root =>
+    const loadPoints = async (svg, every = 6) => loadSvg(svg).then(root =>
         select(root, 'path')
             .flat()
             .map(path => {
@@ -109,13 +109,14 @@ Example.svg = function() {
             const c = Bodies.fromVertices(x+20, y, particle, {
                 render: {
                     fillStyle: style,
-                    strokeStyle: 'black',
+                    strokeStyle: 'pink',
                     lineWidth: 1, 
                     sprite: {
                         texture: svgPath,
-                        xScale: 0.26,
-                        yScale: 0.26
-
+                        yOffset: -0.013,
+                        xOffset: -0.00013,
+                        xScale: 0.4,
+                        yScale: 0.4
                     }
             }});
             const s = Bodies.rectangle(x+40, y, 2, 2, {
@@ -131,7 +132,7 @@ Example.svg = function() {
             const sc = Matter.Constraint.create({bodyA: s, bodyB: c, pointB: {x: 5, y: 0}, length: 3, stiffness: 0.3, render: {visible: false}});
             cs.push({body: c});
             Composite.add(world, [c]);
-            Composite.add(world, [n, s]);
+            // Composite.add(world, [n, s]);
             Composite.add(world, [nc, sc]);
             return c;
         }
@@ -158,23 +159,26 @@ Example.svg = function() {
 
     const svgToVertices = svg => {
         const paths = select(svg, 'path');
-        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), 0.420, 0.420));
+        return paths.map(path => Vertices.scale(Svg.pathToVertices(path, 2), 0.6, 0.6));
     }
 
     async function load() {
+        const middle = createAnchor({x: 200, y: 200});
+        Composite.add(world, middle);
+
         const particleVerticle = svgToVertices(await loadSvg('vobrys.svg'));
+        const White = new Eths('white', particleVerticle);
+        const Red = new Eths('red', particleVerticle);
+
+        // White.generateBody({x: 200, y: 200});
+        // White.anchorBody(middle);
+        // return;
 
         const stone = anchorsFromPoints(await loadPoints('fist_1.svg'));
         const scissors = anchorsFromPoints(await loadPoints('scissors.svg'));
         const paper = anchorsFromPoints(await loadPoints('paper_4f.svg'));
 
-        const White = new Eths('white', particleVerticle);
-        const Red = new Eths('red', particleVerticle);
-
         Composite.add(world, [stone, scissors, paper]);
-
-        const middle = createAnchor({x: 200, y: 200});
-        Composite.add(world, middle);
 
         for (let i = 0; i < paper.bodies.length; i++) {
             White.generateBody({x: 200+i*10, y: 200});
