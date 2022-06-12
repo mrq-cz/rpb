@@ -1,6 +1,6 @@
-var Example = Example || {};
+var RPB = RPB || {};
 
-Example.svg = function() {
+RPB.svg = function() {
     Matter.use(MatterAttractors);
 
     const Engine = Matter.Engine,
@@ -320,9 +320,9 @@ Example.svg = function() {
     };
 };
 
-Example.svg.title = 'Concave SVG Paths';
-Example.svg.for = '>0.16.1';
+RPB.svg.title = 'Concave SVG Paths';
+RPB.svg.for = '>0.16.1';
 
 if (typeof module !== 'undefined') {
-    module.exports = Example.svg;
+    module.exports = RPB.svg;
 }
