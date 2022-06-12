@@ -21,7 +21,8 @@ RPB.svg = function() {
     const engine = Engine.create(),
         world = engine.world;
 
-    engine.world.gravity.y = 20;
+    const defaultGravity = 20;
+    engine.world.gravity.y = defaultGravity;
     engine.timing.timeScale = engine.timing.timeScale / 5;
     MatterAttractors.Attractors.gravityConstant = 0.1;
 
@@ -219,7 +220,7 @@ RPB.svg = function() {
         for (;;) {
             White.anchorAll(bottom);
             Red.anchorAll(bottom);
-            await wait(2000);
+            await wait(1000);
             White.freeAll();
             Red.freeAll();
             engine.world.gravity.y = -1;
@@ -229,8 +230,8 @@ RPB.svg = function() {
                 Bordel.anchorPoints(bordel);
             }
 
-            await wait(4000);
-            engine.world.gravity.y = 20;
+            await wait(5000);
+            engine.world.gravity.y = defaultGravity;
             engine.world.gravity.x = 0;
             Bordel.freeAll();
             White.anchorAll(left);
@@ -278,7 +279,7 @@ RPB.svg = function() {
 
             // reset
             await wait(1500);
-            engine.world.gravity.y = 20;
+            engine.world.gravity.y = defaultGravity;
             engine.world.gravity.x = 0;
             await wait(1500);
 
