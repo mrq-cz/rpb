@@ -9,9 +9,21 @@
     <script src="lib/attractors-fixed.js"></script>
     <script src="engine.js" type="text/javascript"></script>
     <link rel="stylesheet" href="lib/oce.css">
+    <style>
+        .hudden {
+            display: none;
+        }
+    </style>
+    <script>
+        isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    </script>
 </head>
-<body bgcolor="#111" class="scaline screen-door">
+<body bgcolor="#111" class="scaline screen-door" style="text-align: center">
+<span style="color: white; font-size: 24pt; " class="hudden">running in the ETH1 mode, please use chromium based browser for the final form</span>
 <script>
+    if (isSafari) {
+        document.getElementsByClassName('hudden')[0].className = '';
+    }
     RPB.svg()
 </script>
 </body>

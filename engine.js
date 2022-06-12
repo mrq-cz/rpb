@@ -26,12 +26,14 @@ RPB.svg = function() {
     engine.timing.timeScale = engine.timing.timeScale / 5;
     MatterAttractors.Attractors.gravityConstant = 0.1;
 
+
+
     // create renderer
     const render = Render.create({
         element: document.body,
         engine,
         options: {
-            wireframes: false,
+            wireframes: isSafari,
             background: '#111'
         }
     });
